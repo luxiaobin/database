@@ -1,0 +1,28 @@
+#安装mysql
+yum -y install mysql-server mysql-devel mysql mysql-bench mysql-test
+初始化数据库用户密码
+mysqladmin -u root password 'mysql' 
+主机上面，在my.cnf的mysqld中添加
+server-id=1  #相同端口必须唯一
+log-bin   #开启记录二进制日志功能,重启服务
+建立用于复制的帐号
+GRANT REPLICATION SLAVE ON *.* TO 'repl_user'@'192.168.1.86' IDENTIFIED BY 'repl_user';
+mysql> flush tables with read lock;
+mysql> reset master;
+然后不退出终端，新开一个终端，执行下面命令：
+cd /var/lib
+tar zcvf mysql.tar.gz mysql
+scp mysql.tar.gz 192.168.1.86:/var/lib/
+返回上一个终端执行：
+mysql> unlock tables;
+在备机上面，修改my.cnf：
+server-id=2
+重启mysql服务，执行如下命令：
+mysql> CHANGE MASTER TO MASTER_HOST='192.168.1.85',
+     -> MASTER_USER='repl_user',
+     -> MASTER_PASSWORD='repl_user',
+     -> MASTER_LOG_FILE='mysqld-bin.000001',
+     -> MASTER_LOG_POS=106;
+mysql> slave start;
+执行show slave status\G查看服务是否正常
+
