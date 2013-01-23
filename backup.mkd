@@ -1,5 +1,5 @@
 ##锁定数据库
-'''bash
+```bash
 mysql> FLUSH TABLES WITH READ LOCK;
 mysql> SET GLOBAL read_only = ON;
 不关闭此终端，另行打开一个终端，执行备份语句
@@ -9,4 +9,4 @@ mysql dede < dede20130123
 返回上一个终端，解锁
 mysql> SET GLOBAL read_only = OFF;
 mysql> UNLOCK TABLES;
-'''
+```
