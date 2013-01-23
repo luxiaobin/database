@@ -1,0 +1,37 @@
+###安装mysql
+主机分别为mysql1 192.168.1.85 
+          mysql2 192.168.1.86
+yum -y install mysql-server mysql-devel mysql mysql-bench mysql-test
+初始化数据库用户密码
+mysqladmin -u root password 'mysql' 
+###初始化my.cnf设置
+在第一台机器上，在my.cnf的mysqld中添加
+server-id=1  #相同端口必须唯一
+log-bin   #开启记录二进制日志功能,重启服务
+在第二台机器上，在my.cnf的mysqld中添加
+server-id=2  #相同端口必须唯一
+log-bin   #开启记录二进制日志功能,重启服务
+###建立互相主从的关系
+建立用于复制的帐号
+mysql1上面
+GRANT REPLICATION SLAVE ON *.* TO 'repl_user'@'192.168.1.86' IDENTIFIED BY 'repl_user';
+mysql2上面
+GRANT REPLICATION SLAVE ON *.* TO 'repl_user'@'192.168.1.85' IDENTIFIED BY 'repl_user';
+
+mysql> CHANGE MASTER TO MASTER_HOST='192.168.1.85',
+     -> MASTER_USER='repl_user',
+     -> MASTER_PASSWORD='repl_user',
+     -> MASTER_LOG_FILE='mysqld-bin.000001',
+     -> MASTER_LOG_POS=106;
+mysql> slave start;
+执行show slave status\G查看服务是否正常
+
+mysql1上面
+mysql> CHANGE MASTER TO MASTER_HOST='192.168.1.86',
+    -> MASTER_USER='repl_user',
+    -> MASTER_PASSWORD='repl_user',
+    -> MASTER_LOG_FILE='mysqld-bin.000001',
+    -> MASTER_LOG_POS=106;
+mysql> slave start;
+执行show slave status\G查看服务是否正常
+
