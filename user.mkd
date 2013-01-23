@@ -1,16 +1,16 @@
 设置用户密码，连接主机
-'''bash
+```bash
 SET PASSWORD FOR 'root'@'localhost' = PASSWORD('rootpass');
 or
 UPDATE mysql.user SET password=PASSWORD('rootpass') WHERE User='root';
 FLUSH PRIVILEGES;
-'''
+```
 查看用户权限,撤销用户权限，删除用户
-'''bash
+```bash
 SHOW GRANTS for ''@'localhost'
 REVOKE ALL ON *.* FROM ''@'localhost';
 REVOKE GRANT OPTION ON *.* FROM ''@'localhost';
 DROP USER ''@'localhost';
 CREATE USER 'test'@'test.com' IDENTIFIED BY 'test'
 GRANT ALL ON test.* TO 'test'@'test.com'
-
+```
