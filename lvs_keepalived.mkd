@@ -1,0 +1,26 @@
+##本配置在上述mysql dual-master的基础上面进行配置。
+###获取软件,先决条件解决
+```bash
+#wget http://keepalived.org/software/keepalived-1.2.7.tar.gz
+#wget http://www.linuxvirtualserver.org/software/kernel-2.6/ipvsadm-1.26.tar.gz
+#yum -y install gcc gcc-c++ kernel-devel
+#yum -y install popt popt-devel libnl libnl-devel popt-static
+```
+###keepalived和ipvs的安装
+```bash
+#ln -s /usr/src/kernels/2.6.32-279.19.1.el6.x86_64/ /usr/src/linux
+#tar zxvf ipvsadm-1.26.tar.gz
+#cd ipvsadm-1.26
+#make & make install
+#tar zxvf keepalived-1.2.7.tar.gz
+#cd keepalived-1.2.7
+#./configure --prefix=/usr/local/keepalived
+#make
+#make install
+#cp /usr/local/keepalived/sbin/keepalived /usr/sbin/
+#cp /usr/local/keepalived/etc/sysconfig/keepalived /etc/sysconfig/
+#cp /usr/local/keepalived/etc/rc.d/init.d/keepalived /etc/init.d
+#mkdir /etc/keepalived
+```
+###配置文件
+有/etc/keepalived下的keepalived.conf,主备不同，以及相同的/etc/rc.d/init.d/下的realserver.sh
